@@ -1,0 +1,13 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(userAlias, User, 'Пользователь')
+System_Boundary(system, 'System') {
+    System(systemAlias, Application, 'Получение запросов от юзеров, информации от датчиков, приведение в действие приборов')
+}
+System_Ext(extDevicesAlias, External Devices, 'Внешние устройства (датчики, камеры, вентили)')
+
+
+Rel(userAlias, systemAlias, "Смотрит показания, управляет устройствами")
+Rel(systemAlias, extDevicesAlias, "Взаимодействует с датчиками/приборами")
+@enduml
