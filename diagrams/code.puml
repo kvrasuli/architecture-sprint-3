@@ -1,0 +1,42 @@
+@startuml
+
+actor "Клиент" as client
+participant "ms sensor&device manager" as sdm
+queue "Kafka" as kafka
+database "sensor&device db" as db
+
+kafka --> sdm: Получение данных
+activate sdm
+client -> sdm: Подключение к websocket
+sdm -> db: Запись данных
+sdm --> client: Показания в реальном времени
+deactivate sdm
+
+client -> sdm: Получение списка домов юзера\nGET /houses
+activate sdm
+sdm -> db: Получение данных
+activate db
+db --> sdm: Список домов
+deactivate db
+sdm --> client: Список домов
+deactivate sdm
+
+client -> sdm: Получение списка устройств дома\nGET /houses/{id}/devices
+activate sdm
+sdm -> db: Получение данных
+activate db
+db --> sdm: Список устройств
+deactivate db
+sdm --> client: Список устройств
+deactivate sdm
+
+client -> sdm: Добавление устройства\nPOST /houses/{id}
+activate sdm
+sdm -> db: Запись данных
+activate db
+db --> sdm: uuid устройства
+deactivate db
+sdm --> client: uuid устройства
+deactivate sdm
+
+@enduml
