@@ -1,0 +1,21 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(personAlias, "User")
+Container(ui, "UI", "JavaScript", "Пользовательский веб-интерфейс")
+Container_Boundary(system, 'System') {
+    Container(backend, "Backend", "Java", "Система управления")
+    ContainerDb(db, "DB", "PostgreSQL", "База данных")
+    ContainerQueue(queue, "Queue", "Kafka", "Брокер")
+}
+Container_Ext(devices, "devices", "Hardware", "Приборы")
+Container_Ext(sensors, "sensors", "Hardware", "Датчики")
+
+Rel(personAlias, ui, "Visits the website", "HTTPS")
+BiRel(ui, backend, "Sends requests/Gets responses", "JSON/HTTPS")
+BiRel(backend, db, "CRUD", "SQL/TCP")
+Rel_R(queue, devices, "Writes to", "")
+BiRel(sensors, queue, "Reads from", "")
+Rel(backend, queue, "Reads from", "")
+
+@enduml
