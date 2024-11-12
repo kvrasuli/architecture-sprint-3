@@ -1,0 +1,29 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Component(web_ui, Web UI)
+Component(api_gw, API Gateway)
+Component(users, User Management)
+Component(sensors_devices, Sensors&Devices Data Management)
+Component(sensor_adapter, Sensor adapter)
+Component(device_adapter, Device adapter)
+Component_Ext(sensors, Sensors)
+Component_Ext(devices, Devices)
+
+ComponentDb(users_db, "DB", "PostgreSQL", "База данных")
+ComponentDb(sensors_devices_db, "DB", "PostgreSQL", "База данных")
+ComponentQueue(queue, "Queue", "Kafka", "Брокер")
+
+Rel(web_ui, api_gw, "`")
+Rel(api_gw, users, "Get auth,\npersonal data")
+Rel(api_gw, sensors_devices, "`")
+Rel(sensors_devices, queue, "`")
+Rel(sensors_devices, users, "`")
+Rel(sensors_devices, sensors_devices_db, "`")
+Rel(users, users_db, "Reads from\nWrites to")
+Rel(queue, sensor_adapter, "`")
+Rel(queue, device_adapter, "`")
+Rel(sensor_adapter, sensors, "`")
+Rel(device_adapter, devices, "`")
+
+@enduml
