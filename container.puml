@@ -8,14 +8,12 @@ Container_Boundary(system, 'System') {
     ContainerDb(db, "DB", "PostgreSQL", "База данных")
     ContainerQueue(queue, "Queue", "Kafka", "Брокер")
 }
-Container_Ext(devices, "devices", "Hardware", "Приборы")
-Container_Ext(sensors, "sensors", "Hardware", "Датчики")
+Container_Ext(devices_sensors, "Devices&Sensors", "Hardware", "Приборы&Датчики")
 
 Rel(personAlias, ui, "Visits the website", "HTTPS")
 BiRel(ui, backend, "Sends requests/Gets responses", "JSON/HTTPS")
-BiRel(backend, db, "CRUD", "SQL/TCP")
-Rel_R(queue, devices, "Writes to", "")
-BiRel(sensors, queue, "Reads from", "")
 Rel(backend, queue, "Reads from", "")
+BiRel(backend, db, "CRUD", "SQL/TCP")
+BiRel_R(devices_sensors, queue, "Reads from\nWrites to", "")
 
 @enduml
