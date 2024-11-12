@@ -1,0 +1,93 @@
+@startuml
+skinparam ArrowColor Orange
+
+entity "User" as user {
+  * uuid: uuid, <<generated>>
+  --
+  * full_name: str
+  * phone: str
+  * registered_at: datetime
+}
+
+entity "House" as house {
+  * uuid: uuid, <<generated>>
+  --
+  * address: str
+  * number_of_floors: int
+  * added_at: datetime
+}
+
+entity "Camera" as camera {
+  * uuid: uuid, <<generated>>
+  --
+  * resolution: int
+  * retention_period: int
+  * added_at: datetime
+  * model_uuid: uuid
+  * house_uuid: uuid
+  * status_uuid: uuid
+}
+
+entity "TemperatureSensor" as t_sensor {
+  * uuid: uuid, <<generated>>
+  --
+  * accuracy: float
+  * max_value: int
+  * min_value: int
+  * added_at: datetime
+  * model_uuid: uuid
+  * house_uuid: uuid
+  * status_uuid: uuid
+}
+
+entity "Gate" as gate {
+  * uuid: uuid, <<generated>>
+  --
+  * is_open: bool
+  * closing_delay: int
+  * model_uuid: uuid
+  * added_at: datetime
+  * house_uuid: uuid
+  * status_uuid: uuid
+}
+
+entity "HeatingSystem" as h_s {
+  * uuid: uuid, <<generated>>
+  --
+  * is_on: bool
+  * target_temp: int
+  * model_uuid: uuid
+  * added_at: datetime
+  * house_uuid: uuid
+  * status_uuid: uuid
+  * p_coeff: uuid
+  * i_coeff: uuid
+  * d_coeff: uuid
+}
+
+entity "DeviceStatus" as d_s {
+  * uuid: uuid, <<generated>>
+  * code: str
+}
+
+enum DeviceStatus {
+    WORK
+    FAULT
+    ...
+}
+
+d_s -> DeviceStatus
+
+'Связи
+camera }o-up-|| house
+h_s }o-up-|| house
+gate }o-up-|| house
+t_sensor }o-up-|| house
+user }o--o{ house
+
+camera }o-down-|| d_s
+h_s }o-down-|| d_s
+gate }o-down-|| d_s
+t_sensor }o-down-|| d_s
+
+@enduml
