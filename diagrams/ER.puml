@@ -1,0 +1,94 @@
+@startuml
+skinparam ArrowColor Orange
+
+entity "User" as user {
+  * uuid: uuid, <<generated>>
+  --
+  * full_name: str
+  * phone: str
+  * registered_at: datetime
+}
+
+entity "House" as house {
+  * uuid: uuid, <<generated>>
+  --
+  * address: str
+  * number_of_floors: int
+  * added_at: datetime
+}
+
+entity "Camera" as camera {
+  * uuid: uuid, <<generated>>
+  --
+  * resolution: int
+  * retention_period: int
+  * added_at: datetime
+  * model_uuid: uuid
+  * house_uuid: uuid
+  * status: enum
+}
+
+entity "TemperatureSensor" as t_sensor {
+  * uuid: uuid, <<generated>>
+  --
+  * accuracy: float
+  * max_value: int
+  * min_value: int
+  * added_at: datetime
+  * model_uuid: uuid
+  * house_uuid: uuid
+  * status: enum
+}
+
+entity "Gate" as gate {
+  * uuid: uuid, <<generated>>
+  --
+  * is_open: bool
+  * closing_delay: int
+  * model_uuid: uuid
+  * added_at: datetime
+  * house_uuid: uuid
+  * status: enum
+}
+
+entity "HeatingSystem" as h_s {
+  * uuid: uuid, <<generated>>
+  --
+  * is_on: bool
+  * target_temp: int
+  * model_uuid: uuid
+  * added_at: datetime
+  * house_uuid: uuid
+  * p_coeff: uuid
+  * i_coeff: uuid
+  * d_coeff: uuid
+  * status: enum
+}
+
+entity "CameraTelemetry" as c_t {
+  * uuid: uuid, <<generated>>
+  --
+  * camera_uuid
+  * recording_path_to_s3: str
+  * started_at: datetime
+  * ended_at: datetime
+}
+
+entity "TempSensorTelemetry" as t_t {
+  * uuid: uuid, <<generated>>
+  --
+  * sensor_uuid
+  * readings: float
+  * added_at: datetime
+}
+
+'Связи
+camera }o-up-|| house
+camera }o-down-|| c_t
+h_s }o-up-|| house
+gate }o-up-|| house
+t_sensor }o-up-|| house
+t_sensor }o-down-|| t_t
+user }o--o{ house
+
+@enduml

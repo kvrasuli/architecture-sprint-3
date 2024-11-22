@@ -1,0 +1,49 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Boundary(um, "User Management")  {
+    Component(acc, "Accounts")
+    Component(tg, "JWT Auth")
+}
+
+Boundary(sd, "Sensors&Devices Data Management")  {
+    Component(tm, "Telemetry management")
+    Component(dm, "Device management")
+    Component(sm, "Sensor management")
+}
+Boundary(agw, "API Gateway")  {
+    Component(auth, "API Key Auth")
+    Component(api_m, "API Management")
+}
+
+Container(web_ui, Web UI)
+Container(sensor_adapter, Sensor adapter)
+Container(device_adapter, Device adapter)
+Container_Ext(sensors, Sensors)
+Container_Ext(devices, Devices)
+
+ContainerDb(users_db, "DB", "PostgreSQL", "База данных")
+ContainerDb(sensors_devices_db, "DB", "PostgreSQL", "База данных")
+ContainerQueue(queue, "Queue", "Kafka", "Брокер")
+
+Rel(web_ui, api_m, "`")
+Rel(api_m, acc, "Get personal data")
+Rel(api_m, tg, "`")
+
+Rel(api_m, sm, "`")
+BiRel_L(auth, api_m, "`")
+Rel(api_m, dm, "`")
+Rel(sm, queue, "`")
+Rel(dm, queue, "`")
+
+Rel(dm, sensors_devices_db, "`")
+Rel(sm, sensors_devices_db, "`")
+Rel(sensors_devices_db, tm, "`")
+Rel(acc, users_db, "Reads from\nWrites to")
+Rel_R(sm, tm, "`")
+Rel(queue, sensor_adapter, "`")
+Rel(queue, device_adapter, "`")
+Rel(sensor_adapter, sensors, "`")
+Rel(device_adapter, devices, "`")
+
+@enduml
