@@ -3,17 +3,19 @@
 
 Person(personAlias, "User")
 Container(ui, "UI", "JavaScript", "Пользовательский веб-интерфейс")
-Container_Boundary(system, 'System') {
-    Container(backend, "Backend", "Java", "Система управления")
-    ContainerDb(db, "DB", "PostgreSQL", "База данных")
-    ContainerQueue(queue, "Queue", "Kafka", "Брокер")
+Container_Boundary(system, 'Теплый дом') {
+    Container(api_gw, "API Gateway", "", "API шлюз")
+    Container(ds_management, "Devices&Sensors Management", "Java", "Система управления устройствами")
+    Container(user_management, "User Management", "Java", "Система управления пользователями")
 }
 Container_Ext(devices_sensors, "Devices&Sensors", "Hardware", "Приборы&Датчики")
 
 Rel(personAlias, ui, "Visits the website", "HTTPS")
-BiRel(ui, backend, "Sends requests/Gets responses", "JSON/HTTPS")
-Rel(backend, queue, "Reads from", "")
-BiRel(backend, db, "CRUD", "SQL/TCP")
-BiRel_R(devices_sensors, queue, "Reads from\nWrites to", "")
+BiRel(api_gw, ui, "Visits the website", "HTTPS")
+BiRel(api_gw, ds_management, "Sends requests/Gets responses", "JSON/HTTPS")
+BiRel(ds_management, devices_sensors, "Sends commands/Gets data")
+BiRel(api_gw, user_management, "Sends requests/Gets responses", "JSON/HTTPS")
+
+
 
 @enduml

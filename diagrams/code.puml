@@ -2,14 +2,24 @@
 
 actor "Клиент" as client
 participant "ms sensor&device manager" as sdm
-queue "Kafka" as kafka
 database "sensor&device db" as db
+queue "Kafka" as kafka
+participant "Датчики и устройства" as sd
 
+sd --> kafka: Запись данных\n(температура)
+activate kafka
 kafka --> sdm: Получение данных
+deactivate kafka
 activate sdm
 client -> sdm: Подключение к websocket
 sdm -> db: Запись данных
 sdm --> client: Показания в реальном времени
+deactivate sdm
+
+client -> sdm: Команда "Закрыть/открыть ворота"\nPOST /gates/{uuid}
+activate sdm
+sdm -> kafka: Отправка команды в kafka
+sdm --> client: 200 OK
 deactivate sdm
 
 client -> sdm: Получение списка домов юзера\nGET /houses

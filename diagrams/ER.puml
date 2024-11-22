@@ -25,7 +25,7 @@ entity "Camera" as camera {
   * added_at: datetime
   * model_uuid: uuid
   * house_uuid: uuid
-  * status_uuid: uuid
+  * status: enum
 }
 
 entity "TemperatureSensor" as t_sensor {
@@ -37,7 +37,7 @@ entity "TemperatureSensor" as t_sensor {
   * added_at: datetime
   * model_uuid: uuid
   * house_uuid: uuid
-  * status_uuid: uuid
+  * status: enum
 }
 
 entity "Gate" as gate {
@@ -48,7 +48,7 @@ entity "Gate" as gate {
   * model_uuid: uuid
   * added_at: datetime
   * house_uuid: uuid
-  * status_uuid: uuid
+  * status: enum
 }
 
 entity "HeatingSystem" as h_s {
@@ -59,35 +59,36 @@ entity "HeatingSystem" as h_s {
   * model_uuid: uuid
   * added_at: datetime
   * house_uuid: uuid
-  * status_uuid: uuid
   * p_coeff: uuid
   * i_coeff: uuid
   * d_coeff: uuid
+  * status: enum
 }
 
-entity "DeviceStatus" as d_s {
+entity "CameraTelemetry" as c_t {
   * uuid: uuid, <<generated>>
-  * code: str
+  --
+  * camera_uuid
+  * recording_path_to_s3: str
+  * started_at: datetime
+  * ended_at: datetime
 }
 
-enum DeviceStatus {
-    WORK
-    FAULT
-    ...
+entity "TempSensorTelemetry" as t_t {
+  * uuid: uuid, <<generated>>
+  --
+  * sensor_uuid
+  * readings: float
+  * added_at: datetime
 }
-
-d_s -> DeviceStatus
 
 'Связи
 camera }o-up-|| house
+camera }o-down-|| c_t
 h_s }o-up-|| house
 gate }o-up-|| house
 t_sensor }o-up-|| house
+t_sensor }o-down-|| t_t
 user }o--o{ house
-
-camera }o-down-|| d_s
-h_s }o-down-|| d_s
-gate }o-down-|| d_s
-t_sensor }o-down-|| d_s
 
 @enduml
